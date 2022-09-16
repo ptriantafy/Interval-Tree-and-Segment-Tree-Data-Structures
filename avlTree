@@ -1,13 +1,15 @@
 # Python code to insert a node in AVL tree
 # Generic tree node class
 import interval
+from graphviz import Digraph # Print the tree in PDF
+
 class Node(object):
     def __init__(self, range, max):
         self.range = range
         self.max = max
         self.right = None
         self.left = None
-        self.height = 0
+        self.height = 1
 
     def __str__(self):
         return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max) + "\n"
@@ -39,20 +41,20 @@ class AVL_Tree(object):
 		# then try out the 4 cases
 
 		# Case 1 - Right Right
-        if balance < -1 and x.low >= root.right.range.low:
+        if balance <= -1 and x.low >= root.range.low:
             return self.leftRotate(root)
 
         # Case 2 - Left Left
-        if balance > 1 and x.low < root.left.range.low:
+        if balance >= 1 and x.low < root.range.low:
             return self.rightRotate(root)
 
 		# Case 3 - Right Left
-        if balance < -1 and x.low < root.right.range.low:
+        if balance < -1 and x.low < root.range.low:
             root.right = self.rightRotate(root.right)
             return self.leftRotate(root)
 
 		# Case 4 - Left Right
-        if balance > 1 and x.low > root.left.range.low:
+        if balance > 1 and x.low >= root.range.low:
             root.left = self.leftRotate(root.left)
             return self.rightRotate(root)
 
@@ -101,7 +103,7 @@ class AVL_Tree(object):
     def preOrder(self, root):
         if root == None:
             return
-        print("{0} ".format(root.range) + str(self.getBalance(root)), end="")
+        print("{0} ".format(root.range) + str(self.getHeight(root)))
         self.preOrder(root.left)
         self.preOrder(root.right)
 
@@ -111,6 +113,21 @@ class AVL_Tree(object):
         self.inOrder(root.left)
         print(root, end="")
         self.inOrder(root.right)
+
+    def printTreeInPdf(self, filename,root):
+        g = Digraph('G', filename=filename)
+        node_list = [root]
+        while(len(node_list) != 0):
+            current_node = node_list[0]
+            node_list.pop(0)
+            if(current_node.left):
+                g.edge(str(current_node.max)+"\n"+str(current_node.range), str(current_node.left.max)+"\n"+str(current_node.left.range))
+                node_list.append(current_node.left)
+            if(current_node.right is not None):
+                g.edge(str(current_node.max)+"\n"+str(current_node.range), str(current_node.right.max)+"\n"+str(current_node.right.range))
+                node_list.append(current_node.right)
+        g.view()
+        return
 
 if __name__ == '__main__':
     tree = AVL_Tree()
@@ -125,3 +142,4 @@ if __name__ == '__main__':
     print("PreOrder traversal of constructed Interval Tree is")
     tree.preOrder(root)
     print()
+    tree.printTreeInPdf("interval_tree.gv",root)
