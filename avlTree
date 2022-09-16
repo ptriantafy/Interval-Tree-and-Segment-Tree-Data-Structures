@@ -1,0 +1,127 @@
+# Python code to insert a node in AVL tree
+# Generic tree node class
+import interval
+class Node(object):
+    def __init__(self, range, max):
+        self.range = range
+        self.max = max
+        self.right = None
+        self.left = None
+        self.height = 0
+
+    def __str__(self):
+        return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max) + "\n"
+
+
+# AVL tree class which supports the
+# Insert operation
+class AVL_Tree(object):
+	# Recursive function to insert key in
+	# subtree rooted with node and returns
+	# new root of subtree.
+    def insert(self, root, x):
+        if root == None:
+            return Node(x, x.high)
+        if x.low < root.range.low:
+            root.left = self.insert(root.left, x)
+        else:
+            root.right = self.insert(root.right, x)
+        if root.max < x.high:
+            root.max = x.high
+		# Step 2 - Update the height of the
+		# ancestor node
+        root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
+
+		# Step 3 - Get the balance factor
+        balance = self.getBalance(root)
+
+		# Step 4 - If the node is unbalanced,
+		# then try out the 4 cases
+
+		# Case 1 - Right Right
+        if balance < -1 and x.low >= root.right.range.low:
+            return self.leftRotate(root)
+
+        # Case 2 - Left Left
+        if balance > 1 and x.low < root.left.range.low:
+            return self.rightRotate(root)
+
+		# Case 3 - Right Left
+        if balance < -1 and x.low < root.right.range.low:
+            root.right = self.rightRotate(root.right)
+            return self.leftRotate(root)
+
+		# Case 4 - Left Right
+        if balance > 1 and x.low > root.left.range.low:
+            root.left = self.leftRotate(root.left)
+            return self.rightRotate(root)
+
+        return root
+
+    def leftRotate(self, z):
+        y = z.right
+        T2 = y.left
+
+		# Perform rotation
+        y.left = z
+        z.right = T2
+
+		# Update heights
+        z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+
+		# Return the new root
+        return y
+
+    def rightRotate(self, z):
+        y = z.left
+        T3 = y.right
+
+		# Perform rotation
+        y.right = z
+        z.left = T3
+
+		# Update heights
+        z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+
+		# Return the new root
+        return y
+    
+    def getHeight(self, root):
+        if root == None:
+            return 0
+        return root.height
+    
+    def getBalance(self, root):
+        if root == None:
+            return 0
+        return self.getHeight(root.left) - self.getHeight(root.right)
+
+    def preOrder(self, root):
+        if root == None:
+            return
+        print("{0} ".format(root.range) + str(self.getBalance(root)), end="")
+        self.preOrder(root.left)
+        self.preOrder(root.right)
+
+    def inOrder(self, root):
+        if root == None:
+            return
+        self.inOrder(root.left)
+        print(root, end="")
+        self.inOrder(root.right)
+
+if __name__ == '__main__':
+    tree = AVL_Tree()
+    root = None
+    for i in range(10):
+    # (minLow, maxLow, minSize, maxSize)
+        x = interval.Interval(5,80,10,15)
+        root = tree.insert(root, x)
+    print("InOrder traversal of constructed Interval Tree is")
+    tree.inOrder(root)
+    print()
+    print("PreOrder traversal of constructed Interval Tree is")
+    tree.preOrder(root)
+    print()

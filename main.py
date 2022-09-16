@@ -1,34 +1,25 @@
-import numpy as np
-import pylab as pl
-from matplotlib import collections  as mc
 import random
 import interval
+import matplotlib.pyplot as plt
 
+
+numberOfIntervals = 10
 intervalArray = []
-for i in range(5):
+for i in range(numberOfIntervals):
 # (minLow, maxLow, minSize, maxSize)
-    x = interval.Interval(5,40,10,15)
-    print(x)
+    x = interval.Interval(5,80,10,15)
+    # print(x)
+    intervalArray.append(x)
 
+for x in range(len(intervalArray)):
+    # print(intervalArray[x].high)
+    plt.plot((intervalArray[x].low,intervalArray[x].high), (x+1,x+1))
 
 queryLow = random.randint(10,35)
 queryInterval=[queryLow, queryLow + random.randint(12,13)]
-print(queryInterval)
-
-# query_x = random.randint(1,80)
-# query_interval=[[(query_x,50),(query_x,0)]]
-# # 
-# intervals=[]
-# for i in range(40):
-#     small_x=random.randint(0,80)
-#     intervals.append([(small_x, i+2),(small_x+random.randint(40,60), i+2)])
-
-# intervalCollection = mc.LineCollection(intervals, colors="Blue", linewidths=3)
-# queryCollection = mc.LineCollection(query_interval, colors = "Red", linewidth=3)
-# fig, ax = pl.subplots()
-# ax.add_collection(intervalCollection)
-# ax.add_collection(queryCollection)
-# print(query_interval)
-# ax.autoscale()
-# ax.margins(0.1)
-# pl.show()
+print("Query Interval: "+str(queryInterval))
+# print("Query Interval low: " + str(queryInterval[0])+" Query Interval High: " + str(queryInterval[1]))
+plt.plot((queryInterval[0], queryInterval[1]), (0,0))
+plt.plot((queryInterval[0], queryInterval[0]), (0,numberOfIntervals+1), 'k:')
+plt.plot((queryInterval[1], queryInterval[1]), (0,numberOfIntervals+1), 'k:')
+plt.show()
