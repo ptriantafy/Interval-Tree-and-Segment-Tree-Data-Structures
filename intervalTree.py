@@ -1,70 +1,130 @@
+# Python code to insert a node in AVL tree
+# Generic tree node class
+import interval
+from graphviz import Digraph # Print the tree in PDF
 
-class Node:
-	def __init__(self, range, max):
-		self.range = range
-		self.max = max
-		self.left = None
-		self.right = None
+class Node(object):
+    def __init__(self, range, max):
+        self.range = range
+        self.max = max
+        self.right = None
+        self.left = None
+        self.height = 1
 
-	def __str__(self):
-		return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max) + "\n"
-
-
-def insert(root, x):
-	if root == None:
-		return Node(x, x.high)
-
-	if x.low < root.range.low:
-		root.left = insert(root.left, x)
-	else:
-		root.right = insert(root.right, x)
-
-	if root.max < x.high:
-		root.max = x.high
-
-	return root
+    def __str__(self):
+        return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max) + "\n"
 
 
-def inOrder(root):
-	if root == None:
-		return
+class Interval_Tree(object):
+    def insert(self, root, x):
+        
+        if root == None:
+            return Node(x, x.high)
+        if x.low < root.range.low:
+            root.left = self.insert(root.left, x)
+        else:
+            root.right = self.insert(root.right, x)
+        if root.max < x.high:
+            root.max = x.high
 
-	inOrder(root.left)
-	print(root, end="")
-	inOrder(root.right)
+        root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
 
+        balanceFactor = self.getBalance(root)   
+        if balanceFactor > 1:
+            if x.low < root.left.range.low:
+                return self.rightRotate(root)
+            else:
+                root.left = self.leftRotate(root.left)
+                return self.rightRotate(root)
 
-def isOverlapping(root, x):
-	if root == None:
-		# return a dummy interval range
-		return (-1,-1)
+        if balanceFactor < -1:
+            if x.low >= root.right.range.low:
+                return self.leftRotate(root)
+            else:
+                root.right = self.rightRotate(root.right)
+                return self.leftRotate(root)
+        return root
 
-	# if x overlaps with root's interval
-	if (x.low > root.range.low and x.low < root.range.high or (x.high > root.range.low and x.high < root.range.high)):
-		return root.range
+    def leftRotate(self, z):
+        y = z.right
+        T2 = y.left
 
-	elif (root.left != None and root.left.max > x.low):
-		# the overlapping node may be present in left child
-		return isOverlapping(root.left, x)
+		# Perform rotation
+        y.left = z
+        z.right = T2
 
-	else:
-		return isOverlapping(root.right, x)
+		# Update heights
+        z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+		# Return the new root
+        return y
 
+    def rightRotate(self, z):
+        y = z.left
+        T3 = y.right
 
-# if __name__ == '__main__':
-# 	root = None
-# 	root = insert(None, Interval(15, 20))
-# 	root = insert(root, Interval(10, 30))
-# 	root = insert(root, Interval(17, 19))
-# 	root = insert(root, Interval(5, 20))
-# 	root = insert(root, Interval(12, 15))
-# 	root = insert(root, Interval(30, 40))
+		# Perform rotation
+        y.right = z
+        z.left = T3
 
-# 	print("Inorder traversal of constructed Interval Tree is")
-# 	inOrder(root)
-# 	print()
-# 	i = Interval(6, 7)
-# 	print("Searching for interval", i)
-# 	print("Overlaps with ", isOverlapping(root, i))
+		# Update heights
+        z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+		# Return the new root
+        return y
+    
+    def getHeight(self, root):
+        if root == None:
+            return 0
+        return root.height
+    
+    def getBalance(self, root):
+        if root == None:
+            return 0
+        return self.getHeight(root.left) - self.getHeight(root.right)
 
-# # This code is contributed by Tapesh (tapeshdua420)
+    def preOrder(self, root):
+        if root == None:
+            return
+        print("{0} ".format(root.range) + str(self.getBalance(root)))
+        self.preOrder(root.left)
+        self.preOrder(root.right)
+
+    def inOrder(self, root):
+        if root == None:
+            return
+        self.inOrder(root.left)
+        print(root, end="")
+        if (self.getBalance(root)<-1 or self.getBalance(root)>1):
+            print(self.getBalance(root), end="")
+        self.inOrder(root.right)
+
+    def printTreeInPdf(self, filename,root):
+        g = Digraph('G', filename=filename)
+        node_list = [root]
+        while(len(node_list) != 0):
+            current_node = node_list[0]
+            node_list.pop(0)
+            if(current_node.left):
+                g.edge(str(current_node.max)+"\n"+str(current_node.range), str(current_node.left.max)+"\n"+str(current_node.left.range))
+                node_list.append(current_node.left)
+            if(current_node.right is not None):
+                g.edge(str(current_node.max)+"\n"+str(current_node.range), str(current_node.right.max)+"\n"+str(current_node.right.range))
+                node_list.append(current_node.right)
+        g.view()
+        return
+
+if __name__ == '__main__':
+    tree = Interval_Tree()
+    root = None
+    for i in range(100):
+    # (minLow, maxLow, minSize, maxSize)
+        x = interval.Interval(5,200,10,30)
+        root = tree.insert(root, x)
+    print("PreOrder traversal of constructed Interval Tree is")
+    # tree.preOrder(root)
+    print()
+    # print("InOrder traversal of constructed Interval Tree is")
+    # tree.inOrder(root)
+    print()
+    tree.printTreeInPdf("interval_tree.gv",root)

@@ -3,7 +3,7 @@ import interval
 import matplotlib.pyplot as plt
 
 
-numberOfIntervals = 10
+numberOfIntervals = 80
 intervalArray = []
 for i in range(numberOfIntervals):
 # (minLow, maxLow, minSize, maxSize)
@@ -11,6 +11,8 @@ for i in range(numberOfIntervals):
     # print(x)
     intervalArray.append(x)
 
+
+# plot intervals
 for x in range(len(intervalArray)):
     # print(intervalArray[x].high)
     plt.plot((intervalArray[x].low,intervalArray[x].high), (x+1,x+1))
