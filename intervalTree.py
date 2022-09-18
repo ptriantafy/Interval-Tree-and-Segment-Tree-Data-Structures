@@ -14,7 +14,7 @@ class Node(object):
     def __str__(self):
         return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max)
 
-
+#"Introduction to Algorithms" by Cormen, Leiserson, Rivest, and Stein, augmented interval tree implementation
 class Interval_Tree(object):
     def insert(self, root, x):
         
@@ -97,6 +97,7 @@ class Interval_Tree(object):
             return 0
         return self.getHeight(root.left) - self.getHeight(root.right)
 
+    # By "Introduction to Algorithms" by Cormen, Leiserson, Rivest, and Stein
     def searchInterval(self, root, qInterval):
         if(root == None):
             return 
@@ -107,6 +108,7 @@ class Interval_Tree(object):
         else:
             return self.searchInterval(root.right, qInterval)
 
+    # By Michelle Bodnar, Andrew Lohr Rutgers University 2016
     def searchAllOvelaps(self, root, qInterval):
         if(self.isOverlapping(root, qInterval)):
             print("Found: " +str(root))
@@ -115,6 +117,7 @@ class Interval_Tree(object):
         if(root.right and root.right.max>=qInterval.low):
             self.searchAllOvelaps(root.right, qInterval)
 
+    # By "Introduction to Algorithms" by Cormen, Leiserson, Rivest, and Stein
     def isOverlapping(self, root, qInterval):
         if(root == None or qInterval == None):
             return False
@@ -139,6 +142,7 @@ class Interval_Tree(object):
             print(self.getBalance(root), end="")
         self.inOrder(root.right)
 
+    # By iq.opengenus.org
     def printTreeInPdf(self, filename,root):
         g = Digraph('G', filename=filename)
         node_list = [root]

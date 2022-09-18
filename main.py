@@ -2,8 +2,8 @@ import interval
 import intervalTree
 import matplotlib.pyplot as plt
 
-plot = False
-numberOfIntervals = 1000000
+plot = True
+numberOfIntervals = 100
 minLow = 10
 maxLow = 6*numberOfIntervals
 minSize = 5
