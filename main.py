@@ -23,7 +23,8 @@ for i in range(numberOfIntervals):
 queryInterval = interval.Interval(5,250,5,10)
 print("Query Interval: "+str(queryInterval))
 print("First overlap with: "+str(tree.searchInterval(root, queryInterval)))
-print("All overlaps: "+str(tree.searchAllOvelaps(root, queryInterval)))
+print("All overlaps: ")
+tree.searchAllOvelaps(root, queryInterval)
 # tree.printTreeInPdf("interval_tree.gv",root)
 
 

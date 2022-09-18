@@ -106,15 +106,12 @@ class Interval_Tree(object):
             return self.searchInterval(root.right, qInterval)
 
     def searchAllOvelaps(self, root, qInterval):
-        overlaps = []
-        if(root == None):
-            return
         if(self.isOverlapping(root, qInterval)):
-            return root
-        elif(root.left and root.left.max >= qInterval.low):
-            return overlaps.append(self.searchAllOvelaps(root.left, qInterval))
-        else:
-            return overlaps.append(self.searchAllOvelaps(root.right, qInterval))
+            print(str(root))
+        if(root.left and root.left.max >= qInterval.low):
+            self.searchAllOvelaps(root.left, qInterval)
+        if(root.right and (root.right.max>=qInterval.low and root.right.range.low<=qInterval.high)):
+            self.searchAllOvelaps(root.right, qInterval)
 
     def isOverlapping(self, root, qInterval):
         if(root == None or qInterval == None):
