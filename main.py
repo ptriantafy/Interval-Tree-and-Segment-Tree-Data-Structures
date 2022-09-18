@@ -1,27 +1,38 @@
-import random
 import interval
+import intervalTree
 import matplotlib.pyplot as plt
 
 
-numberOfIntervals = 80
+numberOfIntervals = 32
+minLow = 10
+maxLow = 250
+minSize = 5
+maxSize = 30
 intervalArray = []
+tree = intervalTree.Interval_Tree()
+root = None
 for i in range(numberOfIntervals):
-# (minLow, maxLow, minSize, maxSize)
-    x = interval.Interval(5,80,10,15)
+    x = interval.Interval(minLow,maxLow,minSize,maxSize)
     # print(x)
+    root = tree.insert(root, x)
     intervalArray.append(x)
+# print("PreOrder traversal of constructed Interval Tree is")
+# tree.preOrder(root)
+# print("InOrder traversal of constructed Interval Tree is")
+# tree.inOrder(root)
+queryInterval = interval.Interval(5,250,5,10)
+print("Query Interval: "+str(queryInterval))
+print("First overlap with: "+str(tree.searchInterval(root, queryInterval)))
+print("All overlaps: "+str(tree.searchAllOvelaps(root, queryInterval)))
+# tree.printTreeInPdf("interval_tree.gv",root)
 
 
 # plot intervals
 for x in range(len(intervalArray)):
     # print(intervalArray[x].high)
     plt.plot((intervalArray[x].low,intervalArray[x].high), (x+1,x+1))
-
-queryLow = random.randint(10,35)
-queryInterval=[queryLow, queryLow + random.randint(12,13)]
-print("Query Interval: "+str(queryInterval))
 # print("Query Interval low: " + str(queryInterval[0])+" Query Interval High: " + str(queryInterval[1]))
-plt.plot((queryInterval[0], queryInterval[1]), (0,0))
-plt.plot((queryInterval[0], queryInterval[0]), (0,numberOfIntervals+1), 'k:')
-plt.plot((queryInterval[1], queryInterval[1]), (0,numberOfIntervals+1), 'k:')
+plt.plot((queryInterval.low, queryInterval.high), (0,0))
+plt.plot((queryInterval.low, queryInterval.low), (0,numberOfIntervals+1), 'k:')
+plt.plot((queryInterval.high, queryInterval.high), (0,numberOfIntervals+1), 'k:')
 plt.show()

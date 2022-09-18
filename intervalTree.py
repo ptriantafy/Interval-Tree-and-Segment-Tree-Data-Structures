@@ -1,7 +1,7 @@
 # Python code to insert a node in AVL tree
 # Generic tree node class
 import interval
-from graphviz import Digraph # Print the tree in PDF
+from graphviz import Digraph
 
 class Node(object):
     def __init__(self, range, max):
@@ -56,6 +56,8 @@ class Interval_Tree(object):
 		# Update heights
         z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
         y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+        z.max = self.getMaxOfSubtree(z)
+        y.max = self.getMaxOfSubtree(y)
 		# Return the new root
         return y
 
@@ -70,9 +72,19 @@ class Interval_Tree(object):
 		# Update heights
         z.height = 1 + max(self.getHeight(z.left), self.getHeight(z.right))
         y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+        z.max = self.getMaxOfSubtree(z)
+        y.max = self.getMaxOfSubtree(y)
 		# Return the new root
         return y
     
+    def getMaxOfSubtree(self, root):
+        tempMax = [root.range.high]
+        if(root.right):
+            tempMax.append(root.right.max)
+        if(root.left):
+            tempMax.append(root.left.max)
+        return max(tempMax)
+
     def getHeight(self, root):
         if root == None:
             return 0
@@ -82,6 +94,34 @@ class Interval_Tree(object):
         if root == None:
             return 0
         return self.getHeight(root.left) - self.getHeight(root.right)
+
+    def searchInterval(self, root, qInterval):
+        if(root == None):
+            return 
+        if(self.isOverlapping(root, qInterval)):
+            return root
+        elif(root.left and root.left.max >= qInterval.low):
+            return self.searchInterval(root.left, qInterval)
+        else:
+            return self.searchInterval(root.right, qInterval)
+
+    def searchAllOvelaps(self, root, qInterval):
+        overlaps = []
+        if(root == None):
+            return
+        if(self.isOverlapping(root, qInterval)):
+            return root
+        elif(root.left and root.left.max >= qInterval.low):
+            return overlaps.append(self.searchAllOvelaps(root.left, qInterval))
+        else:
+            return overlaps.append(self.searchAllOvelaps(root.right, qInterval))
+
+    def isOverlapping(self, root, qInterval):
+        if(root == None or qInterval == None):
+            return False
+        if(root.range.low <= qInterval.high and qInterval.low <= root.range.high):
+            return True
+        return False
 
     def preOrder(self, root):
         if root == None:
@@ -95,6 +135,7 @@ class Interval_Tree(object):
             return
         self.inOrder(root.left)
         print(root, end="")
+        # print imbalanced nodes
         if (self.getBalance(root)<-1 or self.getBalance(root)>1):
             print(self.getBalance(root), end="")
         self.inOrder(root.right)
@@ -117,7 +158,7 @@ class Interval_Tree(object):
 if __name__ == '__main__':
     tree = Interval_Tree()
     root = None
-    for i in range(100):
+    for i in range(30):
     # (minLow, maxLow, minSize, maxSize)
         x = interval.Interval(5,200,10,30)
         root = tree.insert(root, x)
@@ -127,4 +168,7 @@ if __name__ == '__main__':
     # print("InOrder traversal of constructed Interval Tree is")
     # tree.inOrder(root)
     print()
+    queryInterval = interval.Interval(5,60,10,30)
+    print("Query Interval:"+str(queryInterval))
+    print(tree.searchInterval(root, queryInterval))
     tree.printTreeInPdf("interval_tree.gv",root)
