@@ -12,7 +12,7 @@ class Node(object):
         self.height = 1
 
     def __str__(self):
-        return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max) + "\n"
+        return "[" + str(self.range.low) + ", " + str(self.range.high) + "] " + "max = " + str(self.max)
 
 
 class Interval_Tree(object):
@@ -80,8 +80,10 @@ class Interval_Tree(object):
     def getMaxOfSubtree(self, root):
         tempMax = [root.range.high]
         if(root.right):
+            self.getMaxOfSubtree(root.right)
             tempMax.append(root.right.max)
         if(root.left):
+            self.getMaxOfSubtree(root.left)
             tempMax.append(root.left.max)
         return max(tempMax)
 
@@ -107,10 +109,10 @@ class Interval_Tree(object):
 
     def searchAllOvelaps(self, root, qInterval):
         if(self.isOverlapping(root, qInterval)):
-            print(str(root))
+            print("Found: " +str(root))
         if(root.left and root.left.max >= qInterval.low):
             self.searchAllOvelaps(root.left, qInterval)
-        if(root.right and (root.right.max>=qInterval.low and root.right.range.low<=qInterval.high)):
+        if(root.right and root.right.max>=qInterval.low):
             self.searchAllOvelaps(root.right, qInterval)
 
     def isOverlapping(self, root, qInterval):
