@@ -108,7 +108,7 @@ class Interval_Tree(object):
         else:
             return self.searchInterval(root.right, qInterval)
 
-    # By Michelle Bodnar, Andrew Lohr Rutgers University 2016
+    # By Michelle Bodnar, Andrew Lohr Rutgers University
     def searchAllOvelaps(self, root, qInterval):
         if(self.isOverlapping(root, qInterval)):
             print("Found: " +str(root))
