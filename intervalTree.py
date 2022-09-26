@@ -1,5 +1,3 @@
-# Python code to insert a node in AVL tree
-# Generic tree node class
 import interval
 from graphviz import Digraph
 
@@ -161,16 +159,14 @@ class Interval_Tree(object):
 if __name__ == '__main__':
     tree = Interval_Tree()
     root = None
-    for i in range(30):
+    for i in range(10):
     # (minLow, maxLow, minSize, maxSize)
         x = interval.Interval(5,200,10,30)
         root = tree.insert(root, x)
-    print("PreOrder traversal of constructed Interval Tree is")
+    # print("PreOrder traversal of constructed Interval Tree is")
     # tree.preOrder(root)
-    print()
     # print("InOrder traversal of constructed Interval Tree is")
     # tree.inOrder(root)
-    print()
     queryInterval = interval.Interval(5,60,10,30)
     print("Query Interval:"+str(queryInterval))
     print(tree.searchInterval(root, queryInterval))

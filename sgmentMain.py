@@ -2,7 +2,7 @@ import interval
 import matplotlib.pyplot as plt
 import sgmntTree
 
-plotResults = False
+plotResults = True
 numberOfIntervals = 100
 minLow = 10
 maxLow = 6*numberOfIntervals

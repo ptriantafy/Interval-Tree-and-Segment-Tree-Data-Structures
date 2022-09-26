@@ -1,9 +1,8 @@
-from tracemalloc import start
 import interval
 import intervalTree
 import matplotlib.pyplot as plt
 
-plotResults = False
+plotResults = True
 numberOfIntervals = 100
 minLow = 10
 maxLow = 6*numberOfIntervals
@@ -14,7 +13,6 @@ tree = intervalTree.Interval_Tree()
 root = None
 for i in range(numberOfIntervals):
     x = interval.Interval(minLow,maxLow,minSize,maxSize)
-    # print(x)
     root = tree.insert(root, x)
     if(plotResults):
         intervalArray.append(x)

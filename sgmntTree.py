@@ -1,4 +1,5 @@
 from graphviz import Digraph
+import interval
 
 class Node(object):
     def __init__(self, range):
@@ -48,6 +49,7 @@ class SegmentTree(object):
             elif(root.rightChild):
                 self.query(root.rightChild, point)
     
+    # By iq.opengenus.org
     def printTreeInPdf(self, filename,root):
         g = Digraph('G', filename=filename)
         node_list = [root]
@@ -71,3 +73,13 @@ class SegmentTree(object):
         print(root)
         self.inOrder(root.rightChild)
 
+if __name__ == '__main__':
+    tree = SegmentTree()
+    root = None
+    root = tree.build(2, 13)
+
+    for i in range(3):
+    # (minLow, maxLow, minSize, maxSize)
+        x = interval.Interval(2,8,3,5)
+        tree.insert(x.low, x.high, root)
+    tree.printTreeInPdf("interval_tree.gv",root)

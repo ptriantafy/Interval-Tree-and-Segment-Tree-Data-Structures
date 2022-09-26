@@ -1,4 +1,3 @@
-# Python Code for Interval tree
 import random
 
 class Interval:
